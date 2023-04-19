@@ -1,24 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./home.js";
+import Basket from "./basket.js";
+import "./App.css";
+import { useState, useEffect } from "react";
 function App() {
+  const [product, setProduct] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        "https://fe-test-case-eeca77cfvq-ue.a.run.app"
+      );
+      const data = await response.json();
+
+      const processedData = data.map((item) => ({ ...item, value: 0 }));
+
+      setProduct(processedData);
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={<Home product={product} setProduct={setProduct} />}
+        />
+        <Route
+          path="/basket"
+          element={<Basket product={product} setProduct={setProduct} />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
